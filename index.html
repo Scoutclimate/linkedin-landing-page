@@ -188,7 +188,7 @@
 
     <section class="border-t border-[color:var(--line)]">
       <div class="container py-10">
-        <div class="text-sm text-[color:var(--muted)]">Trusted by founders across climate, defense, deeptech & health</div>
+        <div class="text-sm text-[color:var(--muted)]">Trusted by founders across climate, defense, deeptech, health & more.</div>
       </div>
     </section>
   </main>
@@ -224,11 +224,6 @@
       document.getElementById('client-debug').classList.remove('hidden');
     }
 
-    // ===== GitHub Pages note =====
-    // This page is static-only. You MUST point the form to a backend you control
-    // (e.g., Google Apps Script Web App, Cloudflare Worker, Vercel Function).
-    // Set BACKEND_URL to your deployed endpoint URL (same-origin NOT required).
-    // Example: const BACKEND_URL = 'https://script.google.com/macros/s/XXX/exec';
     const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyW4Qg6s9mpSixQdrUkQyBQ_7R1LexpzZneaTGKMgsrIJlFnPvGEtlEVQr17Q7cdaCGjA/exec';
     const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
     function showConfigWarning(msg){
@@ -264,41 +259,47 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
       const endpoints = getEndpoints();
       let lastErr = null;
       for (const ep of endpoints) {
-        const req = { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) };
-        if (debugMode) clientLog.textContent = `REQUEST → ${ep}
-${JSON.stringify(req,null,2)}`;
-        let res;
-        try {
-          res = await fetch(ep, req);
-        } catch (err) {
-          // Try opaque fallback to let the request go through even if CORS blocks reading response
+        const url = new URL(ep, location.href);
+        const crossOrigin = url.origin !== location.origin;
+
+        // If cross-origin (e.g., Apps Script), use sendBeacon to bypass CORS entirely.
+        if (crossOrigin && navigator.sendBeacon) {
           try {
-            await fetch(ep, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
-            if (debugMode) clientLog.textContent += `
-FALLBACK no-cors used @ ${ep} (opaque response)`;
+            const ok = navigator.sendBeacon(url.toString(), new Blob([JSON.stringify(payload)], { type:'text/plain;charset=UTF-8' }));
+            if (debugMode) clientLog.textContent = `BEACON → ${url}  ok=${ok}`;
             setCache('scout_endpoint', ep);
-            return { ok:true, opaque:true };
-          } catch (err2) {
-            lastErr = { type:'network', message:'Network error or CORS', status: 0, body: String(err2), endpoint: ep };
-            if (debugMode) clientLog.textContent += `
-NETWORK ERROR @ ${ep}: ${String(err2)}`;
-            continue;
+            // Fire-and-forget: treat as success; we don't need to read the response.
+            return { ok: true, mode: 'beacon' };
+          } catch (e) {
+            lastErr = { type:'beacon', message:'sendBeacon failed', body:String(e), endpoint:ep };
+            if (debugMode) clientLog.textContent += `\nBEACON ERROR @ ${ep}: ${String(e)}`;
+            // fall through to fetch attempts below
           }
         }
-        const ct = res.headers.get ? (res.headers.get('content-type') || '') : '';
-        const text = await (res.text ? res.text() : Promise.resolve(''));
-        const data = tryJSON(text);
-        if (debugMode) clientLog.textContent += `
 
-RESPONSE ← ${ep}
-Status: ${res.status} ${res.statusText || ''}
-Content-Type: ${ct}
-Body:
-${text}`;
-        if (res.ok && (!data || data.ok !== false)) { setCache('scout_endpoint', ep); return data || { ok:true }; }
-        lastErr = { type:'http', status: res.status, statusText: res.statusText, body: text, json: data, endpoint: ep };
-        if (res.status === 404 || res.status === 405) continue; // try next
-        break;
+        // Fallback: simple POST with text/plain (avoids preflight). Response may still be opaque without ACAO.
+        const req = { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), mode: crossOrigin ? 'no-cors' : 'cors' };
+        if (debugMode) clientLog.textContent = `REQUEST → ${ep}\n${JSON.stringify({ ...req, body:'<payload>' },null,2)}`;
+        try {
+          const res = await fetch(ep, req);
+          // If no-cors, we cannot read status/body; treat as success since the request left the browser.
+          if (req.mode === 'no-cors') {
+            if (debugMode) clientLog.textContent += `\nRESPONSE ← ${ep} (opaque, no-cors)`;
+            setCache('scout_endpoint', ep);
+            return { ok:true, mode:'no-cors' };
+          }
+          const text = await res.text();
+          const data = tryJSON(text);
+          if (debugMode) clientLog.textContent += `\nRESPONSE ← ${ep}\nStatus: ${res.status}\nBody:\n${text}`;
+          if (res.ok && (!data || data.ok !== false)) { setCache('scout_endpoint', ep); return data || { ok:true }; }
+          lastErr = { type:'http', status: res.status, body:text, json:data, endpoint:ep };
+          if (res.status === 404 || res.status === 405) continue; // try next candidate
+          break;
+        } catch (err) {
+          lastErr = { type:'network', message:'Network error or CORS', status: 0, body: String(err), endpoint: ep };
+          if (debugMode) clientLog.textContent += `\nNETWORK ERROR @ ${ep}: ${String(err)}`;
+          continue;
+        }
       }
       throw lastErr || { type:'unknown', message:'Unknown error' };
     }
@@ -411,89 +412,5 @@ ${JSON.stringify(err,null,2)}`;
     }
   </script>
 
-<!--
-================================
-Backend for **GitHub Pages** → Google Sheet (Apps Script)
---------------------------------
-You asked to use this Sheet: 
-`https://docs.google.com/spreadsheets/d/11J5rgqBDYgb9RJyLYb5xKnrj2sqdOl_-TpIBmcLuD2s/edit?usp=sharing`
-
-Below is a minimal Google Apps Script that appends each submission to that exact Sheet (no Slack, no Copper). It also handles CORS (OPTIONS/HEAD) so the browser won’t hit 405 on preflight.
-
-// Code.gs (Apps Script)
-function doPost(e){
-  try {
-    // CORS preflight handled via manifest (below); doPost only receives POST
-    var payload = JSON.parse(e.postData.contents || '{}');
-    var ss = SpreadsheetApp.openById('11J5rgqBDYgb9RJyLYb5xKnrj2sqdOl_-TpIBmcLuD2s');
-    var sh = ss.getSheetByName('Leads') || ss.insertSheet('Leads');
-
-    // Header row (only once)
-    if (sh.getLastRow() === 0) {
-      sh.appendRow(['ts','first_name','last_name','email','company','role','company_desc','website','linkedin','interests','opt_in','utm_source','utm_medium','utm_campaign','utm_content','referrer','lead_source']);
-    }
-
-    // Append the new lead
-    sh.appendRow([
-      new Date(),
-      payload.first_name || '',
-      payload.last_name || '',
-      payload.email || '',
-      payload.company || '',
-      payload.role || '',
-      payload.company_desc || '',
-      payload.website || '',
-      payload.linkedin || '',
-      (payload.interests || []).join(', '),
-      payload.opt_in ? 'Yes' : 'No',
-      payload.utm_source || '',
-      payload.utm_medium || '',
-      payload.utm_campaign || '',
-      payload.utm_content || '',
-      payload.referrer || '',
-      payload.lead_source || ''
-    ]);
-
-    return json_({ ok:true });
-  } catch(err) {
-    return json_({ ok:false, error: String(err) }, 500);
-  }
-}
-
-// Helpers
-function json_(obj, status){
-  var out = ContentService.createTextOutput(JSON.stringify(obj));
-  out.setMimeType(ContentService.MimeType.JSON);
-  return out.setResponseCode(status || 200);
-}
-
-// appsscript.json (Project Settings → Show "appsscript.json")
-// This allows preflight / CORS and anonymous access to the web app URL you deploy.
-{
-  "timeZone": "Etc/UTC",
-  "exceptionLogging": "STACKDRIVER",
-  "webapp": {
-    "executeAs": "USER_DEPLOYING",
-    "access": "ANYONE"
-  }
-}
-
-Deployment steps:
-1) Open your Sheet and go to **Extensions → Apps Script**.
-2) Paste the Code.gs above (replace any starter code). Create/apply the appsscript.json as shown (File → Project Properties → Show manifest).
-3) **Deploy → New deployment → Web app**
-   - *Execute as*: Me (or User deploying)
-   - *Who has access*: Anyone
-   - Copy the **Web app URL**.
-4) In the landing page HTML, set `BACKEND_URL` to that URL, e.g.
-   `const BACKEND_URL = 'https://script.google.com/macros/s/XXXX/exec';`
-   (Or pass `?endpoint=https://script.google.com/macros/s/XXXX/exec` while testing.)
-
-Notes:
-- The script runs as your account and writes into the specified Sheet; visitors do **not** need Sheet access.
-- You can format the Sheet later or create a view-only copy for your team.
-- If you want to redirect to a Thank‑You page after success, tell me the URL and I’ll add the redirect.
-================================
--->
 </body>
 </html>
