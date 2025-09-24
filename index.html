@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scout — Secure Funding Faster</title>
+  <meta name="description" content="Scout is the AI proposal‑writing platform built by founders, for founders. Tell us about your company and we’ll match you to the right non‑dilutive funding and set up a quick intro." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #ffffff;
+      --ink: #0b1220;         /* headline near‑black */
+      --copy: #334155;        /* slate‑700 */
+      --muted: #64748b;       /* slate‑500 */
+      --line: #e5e7eb;        /* gray‑200 */
+      --surface: #f9fafb;     /* gray‑50 */
+      --primary: #de590e;     /* primary button color */
+      --primary-600: #c64f0d; /* hover */
+      --ring: rgba(222,89,14,.28);
+    }
+    html, body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background: var(--bg); color: var(--ink); }
+    .container { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1rem; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.875rem 1.25rem; border-radius:.25rem; font-weight:600; }
+    .btn-primary { background: var(--primary); color:#fff; box-shadow: 0 1px 0 rgba(214,84,8,.3), 0 8px 20px rgba(214,84,8,.18); }
+    .btn-primary:hover { background: var(--primary-600); }
+    .card { background:#fff; border:1px solid var(--line); border-radius:1rem; box-shadow: 0 4px 20px rgba(2,8,23,.06); }
+    .label { font-size:.9rem; font-weight:500; }
+    .field { background:#fff; border:1px solid var(--line); border-radius:.75rem; padding:.625rem .75rem; }
+    .field:focus { outline:none; box-shadow: 0 0 0 4px var(--ring); border-color: var(--primary-600); }
+    .eyebrow { letter-spacing:.12em; text-transform:uppercase; font-weight:600; color: var(--muted); font-size:.75rem; }
+    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:#f3f4f6; border:1px solid #e5e7eb; border-bottom-width:2px; border-radius:.375rem; padding:.1rem .35rem; }
+    details.debug > summary { cursor:pointer; user-select:none; }
+    pre.debug { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background:#0b1220; color:#e5e7eb; padding:1rem; border-radius:.5rem; overflow:auto; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="border-b border-[color:var(--line)] bg-white/90 backdrop-blur">
+    <div class="container py-4 flex items-center gap-6">
+      <a href="https://scoutclimate.com" class="inline-flex items-center gap-2">
+        <span class="text-2xl font-semibold tracking-tight">Scout</span>
+      </a>
+      <nav class="ml-auto hidden md:flex items-center gap-6 text-sm text-[color:var(--copy)]">
+        <a class="hover:underline" href="https://scoutclimate.com/pricing/">Pricing</a>
+        <a class="hover:underline" href="https://scoutclimate.com/about-us/">About Us</a>
+        <a class="hover:underline" href="https://scoutclimate.com/scout-academy/">Resources</a>
+        <a class="btn btn-primary" href="#form">Get Funded</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <!-- Hero -->
+    <section class="container py-12 md:py-16 grid md:grid-cols-2 gap-10 items-start">
+      <div>
+        <div class="eyebrow">For LinkedIn visitors</div>
+        <h1 class="mt-3 text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">Secure Funding Faster<br class="hidden md:block"> Focus on your Mission</h1>
+        <p class="mt-4 text-[color:var(--copy)] max-w-prose">Get expert‑level results without expert‑level costs. Scout delivers AI‑powered proposal writing with human expertise — faster, more affordable, and built to win.</p>
+        <div class="mt-6">
+          <a class="btn btn-primary" href="#form">Get Funded</a>
+          <img src="https://scoutclimate.com/homepage/platform.png" alt="Scout platform interface" class="mt-8 w-full rounded-lg border border-[color:var(--line)]" />
+        </div>
+        
+        <!-- Optional diagnostics UI (only shown when ?debug=1) -->
+        <div id="debug-panel" class="hidden mt-6">
+          <div class="text-sm text-[color:var(--copy)] font-medium">Diagnostics</div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <button id="btnPing" class="btn btn-ghost border border-[color:var(--line)]">Ping endpoint</button>
+            <button id="btnHealth" class="btn btn-ghost border border-[color:var(--line)]">Health check</button>
+          </div>
+          <details class="debug mt-3">
+            <summary class="text-sm text-[color:var(--muted)]">Show debug output</summary>
+            <pre id="debugOut" class="debug mt-2"></pre>
+          </details>
+        </div>
+      </div>
+
+      <!-- Form Card: right column, sticky on desktop -->
+      <div id="form" class="card p-6 md:p-8 md:sticky md:top-8">
+        <form id="lead-form" novalidate>
+          <h2 class="text-xl font-semibold">Tell us about your company</h2>
+          <p class="mt-1 text-sm text-[color:var(--muted)]">We’ll follow up same‑day with a quick plan & options.</p>
+
+          <!-- Name / Email -->
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="first_name" class="label">First name<span class="text-red-500"> *</span></label>
+              <input id="first_name" name="first_name" required autocomplete="given-name" class="field mt-1 w-full" />
+            </div>
+            <div>
+              <label for="last_name" class="label">Last name<span class="text-red-500"> *</span></label>
+              <input id="last_name" name="last_name" required autocomplete="family-name" class="field mt-1 w-full" />
+            </div>
+            <div class="sm:col-span-2">
+              <label for="email" class="label">Work email<span class="text-red-500"> *</span></label>
+              <input id="email" name="email" type="email" inputmode="email" required autocomplete="email" class="field mt-1 w-full" />
+            </div>
+          </div>
+
+          <!-- Company / Role -->
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="company" class="label">Company<span class="text-red-500"> *</span></label>
+              <input id="company" name="company" required autocomplete="organization" class="field mt-1 w-full" />
+            </div>
+            <div>
+              <label for="role" class="label">Role / Title</label>
+              <input id="role" name="role" autocomplete="organization-title" class="field mt-1 w-full" />
+            </div>
+          </div>
+
+          <!-- Unique: What does your company do? -->
+          <div class="mt-4">
+            <label for="company_desc" class="label">What does your company do?<span class="text-red-500"> *</span></label>
+            <textarea id="company_desc" name="company_desc" required rows="4" placeholder="e.g., We build AI‑enabled batteries that charge in 5 min…" class="field mt-1 w-full"></textarea>
+          </div>
+
+          <!-- Interested in -->
+          <fieldset class="mt-4">
+            <legend class="label">Interested in</legend>
+            <div class="mt-2 grid grid-cols-2 gap-2 text-sm text-[color:var(--copy)]">
+              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="Matching" class="rounded" /> Matching</label>
+              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="AI Writing" class="rounded" /> AI Writing</label>
+              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="Expert Review" class="rounded" /> Expert Review</label>
+              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="Compliance" class="rounded" /> Compliance</label>
+            </div>
+          </fieldset>
+
+          <!-- Optional details -->
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="website" class="label">Company website</label>
+              <input id="website" name="website" type="url" placeholder="https://" class="field mt-1 w-full" />
+            </div>
+            <div>
+              <label for="linkedin" class="label">LinkedIn URL</label>
+              <input id="linkedin" name="linkedin" type="url" placeholder="https://www.linkedin.com/in/…" class="field mt-1 w-full" />
+            </div>
+          </div>
+
+          <!-- Consent -->
+          <div class="mt-4">
+            <label class="inline-flex items-start gap-2 text-sm text-[color:var(--copy)]">
+              <input id="opt_in" name="opt_in" type="checkbox" class="mt-1 rounded" />
+              <span>Send me funding tips & opportunity alerts</span>
+            </label>
+          </div>
+
+          <!-- Hidden tracking (UTMs + referrer + source) -->
+          <input type="hidden" name="utm_source" id="utm_source" />
+          <input type="hidden" name="utm_medium" id="utm_medium" />
+          <input type="hidden" name="utm_campaign" id="utm_campaign" />
+          <input type="hidden" name="utm_content" id="utm_content" />
+          <input type="hidden" name="referrer" id="referrer" />
+          <input type="hidden" name="lead_source" id="lead_source" value="LinkedIn Landing" />
+
+          <!-- Honeypot -->
+          <div class="hidden" aria-hidden="true">
+            <label>Leave this field empty<input type="text" name="fax_number" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <!-- Submit -->
+          <div class="mt-6 flex items-center gap-3">
+            <button type="submit" id="submitBtn" class="btn btn-primary">Get my matches</button>
+            <span id="formStatus" class="text-sm text-[color:var(--muted)]" role="status" aria-live="polite"></span>
+          </div>
+
+          <!-- Debug status area (shown only when ?debug=1) -->
+          <details id="client-debug" class="debug mt-3 hidden">
+            <summary class="text-sm text-[color:var(--muted)]">Client request/response</summary>
+            <pre id="clientLog" class="debug mt-2"></pre>
+          </details>
+        </form>
+      </div>
+    </section>
+
+    <section class="border-t border-[color:var(--line)]">
+      <div class="container py-10">
+        <div class="text-sm text-[color:var(--muted)]">Trusted by founders across climate, deeptech & health</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-[color:var(--line)] bg-white">
+    <div class="container py-8 text-xs text-[color:var(--muted)]">
+      © <span id="year"></span> Scout Climate, Inc. • <a class="underline" href="https://scoutclimate.com/privacy-policy/">Privacy</a> • <a class="underline" href="https://scoutclimate.com/terms/">Terms</a>
+    </div>
+  </footer>
+
+  <script>
+    // Utility: safe JSON parse
+    function tryJSON(text){ try { return JSON.parse(text); } catch { return null; } }
+    function qs(k){ return new URLSearchParams(location.search).get(k); }
+
+    // Populate year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Pull UTMs + referrer
+    const params = new URLSearchParams(location.search);
+    for (const key of ['utm_source','utm_medium','utm_campaign','utm_content']) {
+      const v = params.get(key);
+      if (v) document.getElementById(key).value = v;
+    }
+    document.getElementById('referrer').value = document.referrer || '';
+
+    // Debug toggles
+    const debugMode = qs('debug') === '1';
+    if (debugMode) {
+      document.getElementById('debug-panel').classList.remove('hidden');
+      document.getElementById('client-debug').classList.remove('hidden');
+    }
+
+    // Diagnostics buttons
+    const debugOut = document.getElementById('debugOut');
+    function logDebug(obj){ if (!debugMode) return; debugOut.textContent += `\n${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
+
+    const form = document.getElementById('lead-form');
+    const statusEl = document.getElementById('formStatus');
+    const btn = document.getElementById('submitBtn');
+    const clientLog = document.getElementById('clientLog');
+
+    async function submitLead(payload){
+      const req = { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept':'application/json' }, body: JSON.stringify(payload) };
+      if (debugMode) clientLog.textContent = `REQUEST\n${JSON.stringify(req,null,2)}`;
+      const res = await fetch('/api/copper/lead', req).catch(err => ({ ok:false, status:0, statusText:'NetworkError', _err: String(err) }));
+
+      // handle network failure without response
+      if (!res || res.status === 0) {
+        throw { type:'network', message:'Network error or CORS', status: 0, body: res && res._err };
+      }
+
+      const ct = res.headers.get ? (res.headers.get('content-type') || '') : '';
+      const text = await (res.text ? res.text() : Promise.resolve(''));
+      const data = tryJSON(text);
+      if (debugMode) clientLog.textContent += `\n\nRESPONSE\nStatus: ${res.status} ${res.statusText || ''}\nContent-Type: ${ct}\nBody:\n${text}`;
+
+      // Accept either 200 JSON {ok:true} OR any 2xx with body
+      if (!res.ok || (data && data.ok === false)) {
+        throw { type:'http', status: res.status, statusText: res.statusText, body: text, json: data };
+      }
+      return data || { ok:true };
+    }
+
+    // Form submit handler with detailed error surfacing
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = '';
+
+      const requiredIds = ['first_name','last_name','email','company','company_desc'];
+      for (const id of requiredIds) {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) { el.focus(); statusEl.textContent = 'Please complete required fields.'; return; }
+      }
+
+      if (form.fax_number && form.fax_number.value) { statusEl.textContent = 'Something went wrong.'; return; }
+
+      btn.disabled = true; btn.classList.add('opacity-70'); statusEl.textContent = 'Submitting…';
+
+      const interests = Array.from(form.querySelectorAll('input[name="interests"]:checked')).map(i => i.value);
+      const payload = {
+        first_name: form.first_name.value.trim(),
+        last_name: form.last_name.value.trim(),
+        email: form.email.value.trim(),
+        company: form.company.value.trim(),
+        role: form.role.value.trim() || null,
+        company_desc: form.company_desc.value.trim(),
+        website: form.website.value.trim() || null,
+        linkedin: form.linkedin.value.trim() || null,
+        interests,
+        opt_in: form.opt_in.checked,
+        utm_source: form.utm_source.value,
+        utm_medium: form.utm_medium.value,
+        utm_campaign: form.utm_campaign.value,
+        utm_content: form.utm_content.value,
+        referrer: form.referrer.value,
+        lead_source: form.lead_source.value
+      };
+
+      try {
+        await submitLead(payload);
+        statusEl.textContent = 'Thanks! We’ll be in touch shortly.';
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        const code = err && err.status ? ` (HTTP ${err.status})` : '';
+        statusEl.textContent = `Could not submit form${code}. Please try again.`;
+        if (debugMode) {
+          clientLog.textContent += `\n\nCLIENT ERROR\n${JSON.stringify(err,null,2)}`;
+        }
+      } finally {
+        btn.disabled = false; btn.classList.remove('opacity-70');
+      }
+    });
+
+    // Diagnostics: endpoint ping + health
+    const btnPing = document.getElementById('btnPing');
+    const btnHealth = document.getElementById('btnHealth');
+    btnPing && btnPing.addEventListener('click', async ()=>{
+      logDebug('Pinging /api/copper/lead (OPTIONS)…');
+      const r = await fetch('/api/copper/lead', { method:'OPTIONS' }).catch(e=>({ status:0, _err:String(e) }));
+      logDebug({ status:r.status, ok:r.ok === true });
+    });
+    btnHealth && btnHealth.addEventListener('click', async ()=>{
+      logDebug('Health check (HEAD)…');
+      for (const ep of getEndpoints()) {
+        const r = await fetch(ep, { method:'HEAD' }).catch(e=>({ status:0, _err:String(e) }));
+        logDebug({ endpoint: ep, status: r.status, ok: r.ok === true });
+      }
+    });
+    });
+
+    // --- Lightweight client tests (run with ?test=1) ---
+    if (qs('test') === '1') runClientTests();
+
+    function assert(cond, msg){
+      if (!cond) throw new Error('Test failed: '+msg);
+      console.log('✓', msg);
+      const el = document.getElementById('testResults');
+      if (el) el.innerHTML += `<div class="text-green-700">✓ ${msg}</div>`;
+    }
+
+    async function runClientTests(){
+      const area = document.createElement('div');
+      area.id = 'testResults';
+      area.className = 'container my-6 p-4 border border-[color:var(--line)] rounded-lg bg-[color:var(--surface)] text-sm';
+      area.innerHTML = '<div class="font-semibold mb-2">Client Tests</div>';
+      document.body.appendChild(area);
+
+      const realFetch = window.fetch;
+      const sample = { first_name:'A', last_name:'B', email:'a@b.com', company:'C', company_desc:'D' };
+
+      // 1) 404 Not Found
+      window.fetch = async () => new Response('Not Found', { status:404, statusText:'Not Found' });
+      try { await submitLead(sample); assert(false, '404 should throw'); } catch (e) { assert(e.status===404, '404 returns status 404'); }
+
+      // 2) 502 Bad Gateway with JSON body
+      window.fetch = async () => new Response(JSON.stringify({ ok:false, error:'Copper API error' }), { status:502, headers:{ 'Content-Type':'application/json' } });
+      try { await submitLead(sample); assert(false, '502 should throw'); } catch (e) { assert(e.status===502 && e.json && e.json.error, '502 surfaces JSON error'); }
+
+      // 3) 200 but ok:false payload
+      window.fetch = async () => new Response(JSON.stringify({ ok:false, error:'App error' }), { status:200, headers:{ 'Content-Type':'application/json' } });
+      try { await submitLead(sample); assert(false, '200/ok:false should throw'); } catch (e) { assert(e.json.error==='App error', 'ok:false surfaces app error'); }
+
+      // 4) 200 ok:true
+      window.fetch = async () => new Response(JSON.stringify({ ok:true }), { status:200, headers:{ 'Content-Type':'application/json' } });
+      const r = await submitLead(sample); assert(r.ok===true, '200 ok:true resolves');
+
+      // 5) Network error
+      window.fetch = async () => { throw new TypeError('Failed to fetch'); };
+      try { await submitLead(sample); assert(false, 'Network error should throw'); } catch (e) { assert(e.type==='network', 'Network error classified'); }
+
+      // restore
+      window.fetch = realFetch;
+    }
+  </script>
+
+<!--
+================================
+Serverless endpoint: /api/copper/lead
+--------------------------------
+Create this file on your host (Vercel/Netlify/Cloudflare). It reads the form
+payload and UPSERTs a Copper Lead using secure env vars.
+
+Required env vars (set in your dashboard, do NOT expose client-side):
+- COPPER_API_KEY        # rotate any exposed key; store the new one here
+- COPPER_USER_EMAIL     # email address of the API key owner in Copper
+
+--- Vercel (Next.js /pages/api) ---
+// /pages/api/copper/lead.js
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ ok:false, error:'Method not allowed' });
+  try {
+    const lead = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+
+    const properties = {
+      name: `${lead.first_name} ${lead.last_name}`.trim(),
+      company_name: lead.company || undefined,
+      title: lead.role || undefined,
+      details: lead.company_desc || undefined,
+      email: { email: lead.email, category: 'work' },
+      websites: lead.website ? [{ url: lead.website, category: 'work' }] : [],
+      socials: lead.linkedin ? [{ url: lead.linkedin, category: 'linkedin' }] : [],
+      // customer_source_id: 12345, // optional
+      custom_fields: [
+        // { custom_field_definition_id: 11111, value: (lead.interests||[]).join(', ') },
+        // { custom_field_definition_id: 11112, value: lead.utm_source || '' },
+        // { custom_field_definition_id: 11113, value: lead.utm_medium || '' },
+        // { custom_field_definition_id: 11114, value: lead.utm_campaign || '' },
+        // { custom_field_definition_id: 11115, value: lead.utm_content || '' },
+        // { custom_field_definition_id: 11116, value: lead.referrer || '' },
+        // { custom_field_definition_id: 11117, value: lead.opt_in ? 'Yes' : 'No' }
+      ]
+    };
+
+    const copperRes = await fetch('https://api.copper.com/developer_api/v1/leads/upsert', {
+      method: 'PUT',
+      headers: {
+        'X-PW-AccessToken': process.env.COPPER_API_KEY,
+        'X-PW-Application': 'developer_api',
+        'X-PW-UserEmail': process.env.COPPER_USER_EMAIL,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        properties,
+        match: { field_name: 'email', field_value: lead.email }
+      })
+    });
+
+    const text = await copperRes.text();
+    if (!copperRes.ok) {
+      console.error('Copper error', copperRes.status, text);
+      return res.status(502).json({ ok:false, error:'Copper API error', detail:text });
+    }
+
+    // Copper sometimes returns JSON; ensure JSON response outward
+    let data = tryParse(text);
+    if (!data) data = { raw:text };
+    return res.status(200).json({ ok:true, data });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ ok:false, error:'Server error' });
+  }
+}
+function tryParse(t){ try { return JSON.parse(t); } catch { return null; } }
+
+--- Netlify Functions ---
+// netlify/functions/copper-lead.js
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ ok:false, error:'Method not allowed' }) };
+  const lead = JSON.parse(event.body||'{}');
+  const resp = await fetch('https://api.copper.com/developer_api/v1/leads/upsert', {
+    method: 'PUT',
+    headers: {
+      'X-PW-AccessToken': process.env.COPPER_API_KEY,
+      'X-PW-Application': 'developer_api',
+      'X-PW-UserEmail': process.env.COPPER_USER_EMAIL,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ properties:{ name:`${lead.first_name} ${lead.last_name}`.trim(), email:{ email:lead.email, category:'work' }, company_name:lead.company, title:lead.role, details:lead.company_desc }, match:{ field_name:'email', field_value: lead.email } })
+  });
+  const text = await resp.text();
+  const ok = resp.ok;
+  if (!ok) return { statusCode: 502, body: JSON.stringify({ ok:false, error:'Copper API error', detail:text }) };
+  return { statusCode: 200, body: JSON.stringify({ ok:true, data: tryParse(text)||{ raw:text } }) };
+  function tryParse(t){ try { return JSON.parse(t); } catch { return null; } }
+};
+
+--- Cloudflare Pages Function ---
+// functions/api/copper/lead.ts
+export const onRequestPost: PagesFunction = async ({ request, env }) => {
+  const lead = await request.json();
+  const r = await fetch('https://api.copper.com/developer_api/v1/leads/upsert', {
+    method: 'PUT',
+    headers: {
+      'X-PW-AccessToken': env.COPPER_API_KEY,
+      'X-PW-Application': 'developer_api',
+      'X-PW-UserEmail': env.COPPER_USER_EMAIL,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ properties:{ name:`${lead.first_name} ${lead.last_name}`.trim(), email:{ email:lead.email, category:'work' }, company_name:lead.company, title:lead.role, details:lead.company_desc }, match:{ field_name:'email', field_value: lead.email } })
+  });
+  const text = await r.text();
+  if (!r.ok) return new Response(JSON.stringify({ ok:false, error:'Copper API error', detail:text }), { status: 502, headers:{ 'Content-Type':'application/json' } });
+  return new Response(JSON.stringify({ ok:true, data: tryParse(text)||{ raw:text } }), { status: 200, headers:{ 'Content-Type':'application/json' } });
+  function tryParse(t){ try { return JSON.parse(t); } catch { return null; } }
+};
+
+// Notes:
+// • The client now surfaces precise errors with HTTP status & body.
+// • Use ?debug=1 to show client request/response and diagnostics buttons.
+// • Use ?test=1 to run client-side tests that mock fetch and validate error handling.
+================================
+-->
+</body>
+</html>
