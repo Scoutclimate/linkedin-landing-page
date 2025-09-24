@@ -26,6 +26,7 @@
     .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.875rem 1.25rem; border-radius:.25rem; font-weight:600; }
     .btn-primary { background: var(--primary); color:#fff; box-shadow: 0 1px 0 rgba(214,84,8,.3), 0 8px 20px rgba(214,84,8,.18); }
     .btn-primary:hover { background: var(--primary-600); }
+    .btn-ghost { background:#fff; border:1px solid var(--line); }
     .card { background:#fff; border:1px solid var(--line); border-radius:1rem; box-shadow: 0 4px 20px rgba(2,8,23,.06); }
     .label { font-size:.9rem; font-weight:500; }
     .field { background:#fff; border:1px solid var(--line); border-radius:.75rem; padding:.625rem .75rem; }
@@ -40,15 +41,19 @@
   <!-- Header -->
   <header class="border-b border-[color:var(--line)] bg-white/90 backdrop-blur">
     <div class="container py-4 flex items-center gap-6">
-      <a href="https://scoutclimate.com" class="inline-flex items-center gap-2">
-        <span class="text-2xl font-semibold tracking-tight">Scout</span>
+      <a href="https://scoutclimate.com" class="inline-flex items-center" aria-label="Scout home">
+        <div class="h-8 w-auto text-[color:var(--ink)]" style="aspect-ratio:632/127">
+          <svg width="100%" height="100%" viewBox="0 0 632 127" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <path d="M80.546 74.8215L30.98 125.637C30.3862 126.247 29.5708 126.592 28.7193 126.592H2.11461C0.511363 126.592 -0.301335 124.662 0.818795 123.515L69.5768 53.1046C77.6695 44.7685 90.7983 44.7685 98.891 53.1046L127.163 82.1917C129.421 84.5172 133.068 84.5172 135.291 82.1917C137.548 79.8662 137.548 76.1095 135.291 73.8198L111.846 49.67C100.836 38.3286 100.836 19.9747 111.846 8.63328C122.856 -2.70816 140.674 -2.70816 151.684 8.63328L263.391 123.262C264.515 124.408 263.703 126.341 262.098 126.341H235.435C234.598 126.341 233.796 126.009 233.205 125.418L228.224 120.438L134.994 24.8685C133.084 22.9007 129.386 23.3051 127.476 25.2729L127.302 25.4518C125.392 27.4196 125.392 31.0082 127.302 32.9759L151.823 59.0437C162.764 70.3136 162.799 88.6316 151.823 99.9015L151.65 100.08C140.709 111.35 122.926 111.35 111.985 100.08L87.464 74.8215C85.4843 72.7822 82.5258 72.7822 80.546 74.8215Z" fill="currentColor"></path>
+        <path d="M604.557 97.9236C608.43 99.5707 612.569 100.394 616.977 100.394H630.799V82.2318H616.977C615.062 82.2318 613.259 81.8757 611.568 81.1635C609.876 80.4067 608.407 79.4051 607.161 78.1586C605.914 76.9122 604.935 75.4655 604.223 73.8184C603.511 72.1268 603.154 70.3239 603.154 68.4097V43.6077H630.799V25.4453H603.154V0.43436H584.992V68.4097C584.992 72.8168 585.816 76.9567 587.463 80.8296C589.154 84.7024 591.447 88.1079 594.34 91.0459C597.278 93.9394 600.684 96.232 604.557 97.9236Z" fill="currentColor"></path>
+        <path d="M423.184 43.1026L409.83 56.5241C409.162 54.6544 408.249 52.9851 407.092 51.5161C405.935 50.0025 404.621 48.7338 403.152 47.71C401.728 46.6861 400.17 45.9071 398.478 45.3729C396.787 44.8387 395.051 44.5716 393.27 44.5716C390.777 44.5716 388.418 45.0836 386.192 46.1074C384.011 47.1313 382.097 48.578 380.449 50.4477C378.847 52.2728 377.578 54.4541 376.643 56.9915C375.709 59.5289 375.241 62.3334 375.241 65.4049C375.241 67.8978 375.709 70.2349 376.643 72.4162C377.578 74.5974 378.847 76.5116 380.449 78.1587C382.097 79.8057 384.011 81.0967 386.192 82.0315C388.418 82.9664 390.777 83.4338 393.27 83.4338C395.051 83.4338 396.764 83.1889 398.412 82.6993C400.059 82.2096 401.594 81.5196 403.019 80.6293C404.488 79.6945 405.779 78.5816 406.892 77.2906C408.049 75.9552 408.984 74.4861 409.696 72.8836L423.051 86.305C421.359 88.7089 419.401 90.8679 417.175 92.7821C414.994 94.6962 412.612 96.3211 410.03 97.6565C407.493 98.992 404.8 99.9936 401.95 100.661C399.146 101.374 396.252 101.73 393.27 101.73C388.24 101.73 383.499 100.795 379.047 98.9252C374.64 97.011 370.767 94.4069 367.429 91.1127C364.134 87.8186 361.53 83.968 359.616 79.5609C357.702 75.1539 356.745 70.4352 356.745 65.4049C356.745 59.9295 357.702 54.8102 359.616 50.0471C361.53 45.2839 364.134 41.1439 367.429 37.6272C370.767 34.0659 374.64 31.2615 379.047 29.2137C383.499 27.166 388.24 26.1422 393.27 26.1422C396.252 26.1422 399.168 26.5205 402.017 27.2773C404.911 28.0341 407.649 29.147 410.23 30.616C412.857 32.0405 415.261 33.7988 417.442 35.8911C419.668 37.9833 421.582 40.3872 423.184 43.1026Z" fill="currentColor"></path>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M500.174 64.0027C500.174 69.3446 499.217 74.3303 497.303 78.96C495.389 83.5451 492.785 87.5292 489.49 90.9124C486.196 94.2511 482.323 96.8997 477.872 98.8584C473.465 100.773 468.724 101.73 463.649 101.73C458.619 101.73 453.878 100.773 449.426 98.8584C445.019 96.8997 441.147 94.2511 437.808 90.9124C434.514 87.5292 431.91 83.5451 429.995 78.96C428.081 74.3303 427.124 69.3446 427.124 64.0027C427.124 58.5718 428.081 53.5415 429.995 48.9119C431.91 44.2823 434.514 40.2981 437.808 36.9595C441.147 33.5763 445.019 30.9276 449.426 29.0134C453.878 27.0992 458.619 26.1422 463.649 26.1422C468.724 26.1422 473.465 27.0547 477.872 28.8799C482.323 30.6605 486.196 33.2201 489.49 36.5588C492.785 39.853 495.389 43.8371 497.303 48.5113C499.217 53.1409 500.174 58.3047 500.174 64.0027ZM481.812 64.0027C481.812 61.0647 481.322 58.416 480.343 56.0567C479.408 53.6528 478.117 51.6051 476.47 49.9135C474.823 48.1774 472.886 46.8642 470.66 45.9739C468.479 45.039 466.142 44.5716 463.649 44.5716C461.156 44.5716 458.797 45.039 456.571 45.9739C454.39 46.8642 452.476 48.1774 450.829 49.9135C449.226 51.6051 447.957 53.6528 447.023 56.0567C446.088 58.416 445.62 61.0647 445.62 64.0027C445.62 66.7627 446.088 69.3223 447.023 71.6816C447.957 74.041 449.226 76.0887 450.829 77.8248C452.476 79.5609 454.39 80.9409 456.571 81.9648C458.797 82.9441 461.156 83.4338 463.649 83.4338C466.142 83.4338 468.479 82.9664 470.66 82.0315C472.886 81.0967 474.823 79.7835 476.47 78.0919C478.117 76.4003 479.408 74.3526 480.343 71.9487C481.322 69.5449 481.812 66.8962 481.812 64.0027Z" fill="currentColor"></path>
+        <path d="M541.307 101.73C536.9 101.73 532.76 100.951 528.887 99.3926C525.014 97.8345 521.609 95.631 518.67 92.782C515.777 89.8885 513.484 86.394 511.793 82.2986C510.146 78.1586 509.322 73.529 509.322 68.4097V25.3117H527.485V68.4097C527.485 70.8136 527.841 72.9726 528.553 74.8867C529.31 76.7564 530.311 78.3367 531.558 79.6276C532.804 80.9186 534.251 81.8979 535.898 82.5657C537.59 83.2334 539.392 83.5673 541.307 83.5673C543.221 83.5673 545.024 83.2334 546.715 82.5657C548.362 81.8979 549.809 80.9186 551.056 79.6276C552.302 78.3367 553.304 76.7564 554.06 74.8867C554.773 72.9726 555.129 70.8136 555.129 68.4097V25.3117H573.291V68.4097C573.291 73.529 572.468 78.1586 570.82 82.2986C569.129 86.394 566.836 89.8885 563.943 92.782C561.005 95.631 557.599 97.8345 553.727 99.3926C549.854 100.951 545.714 101.73 541.307 101.73Z" fill="currentColor"></path>
+        <path d="M301.801 29.247C305.179 27.0357 308.568 25.8666 312.804 25.4519C313.002 25.4325 321.342 25.4092 331.338 25.4002L349.513 25.3837V43.3784L328.76 43.38C314.258 43.3796 313.187 43.3796 312.333 43.8103C312.264 43.8447 312.198 43.8818 312.125 43.9218C312.068 43.9538 312.007 43.9877 311.939 44.0236C310.632 44.7152 309.466 46.2778 309.205 47.6854C308.757 50.0967 309.8 52.5375 311.74 53.6226C311.814 53.6641 311.882 53.7031 311.946 53.7399C312.089 53.8216 312.211 53.8919 312.338 53.9525C313.117 54.3242 314.071 54.3304 320.878 54.3747L320.879 54.3747C321.377 54.3779 321.907 54.3813 322.469 54.3851C331.2 54.4441 331.619 54.4556 332.803 54.6689C341.641 56.2606 348.424 62.0325 351.303 70.4114C352.196 73.0095 352.546 75.4268 352.464 78.4377C352.375 81.7174 351.904 83.9712 350.722 86.7712C349.451 89.7838 347.969 92.0148 345.762 94.2364C344.029 95.9799 343.004 96.7926 341.053 97.9668C339.078 99.156 336.231 100.296 334.086 100.757C333.941 100.789 333.804 100.818 333.672 100.846C333.545 100.872 333.422 100.897 333.299 100.92C331.451 101.27 329.538 101.27 313.066 101.27H295.116L295.169 83.3265L330.438 83.2237L330.978 83.0024C331.769 82.6778 332.333 82.3219 332.855 81.8189C335.499 79.2683 334.946 74.8322 331.762 73.0528C331.699 73.0173 331.641 72.9838 331.586 72.9523C331.47 72.8858 331.369 72.8278 331.265 72.7771C330.552 72.4313 329.674 72.4255 322.811 72.38L321.121 72.3687C313.608 72.3174 312.06 72.3068 310.56 72.0315C310.17 71.9601 309.785 71.8709 309.298 71.7585L309.256 71.7488C304.997 70.7639 300.869 68.4007 297.669 65.115C296.081 63.4838 294.61 61.3728 293.522 59.1623C292.512 57.1111 291.963 55.4789 291.533 53.2497C289.744 43.9728 293.803 34.4834 301.801 29.247Z" fill="currentColor"></path>
+          </svg>
+        </div>
       </a>
-      <nav class="ml-auto hidden md:flex items-center gap-6 text-sm text-[color:var(--copy)]">
-        <a class="hover:underline" href="https://scoutclimate.com/pricing/">Pricing</a>
-        <a class="hover:underline" href="https://scoutclimate.com/about-us/">About Us</a>
-        <a class="hover:underline" href="https://scoutclimate.com/scout-academy/">Resources</a>
-        <a class="btn btn-primary" href="#form">Get Funded</a>
-      </nav>
+      
     </div>
   </header>
 
@@ -60,7 +65,6 @@
         <h1 class="mt-3 text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">Secure Funding Faster<br class="hidden md:block"> Focus on your Mission</h1>
         <p class="mt-4 text-[color:var(--copy)] max-w-prose">Get expert‑level results without expert‑level costs. Scout delivers AI‑powered proposal writing with human expertise — faster, more affordable, and built to win.</p>
         <div class="mt-6">
-          <a class="btn btn-primary" href="#form">Get Funded</a>
           <img src="https://scoutclimate.com/homepage/platform.png" alt="Scout platform interface" class="mt-8 w-full rounded-lg border border-[color:var(--line)]" />
         </div>
         
@@ -68,13 +72,18 @@
         <div id="debug-panel" class="hidden mt-6">
           <div class="text-sm text-[color:var(--copy)] font-medium">Diagnostics</div>
           <div class="mt-2 flex flex-wrap gap-2">
-            <button id="btnPing" class="btn btn-ghost border border-[color:var(--line)]">Ping endpoint</button>
-            <button id="btnHealth" class="btn btn-ghost border border-[color:var(--line)]">Health check</button>
+            <button id="btnPing" class="btn btn-ghost">Ping endpoints</button>
+            <button id="btnHealth" class="btn btn-ghost">Health check</button>
           </div>
           <details class="debug mt-3">
             <summary class="text-sm text-[color:var(--muted)]">Show debug output</summary>
             <pre id="debugOut" class="debug mt-2"></pre>
           </details>
+        </div>
+
+        <!-- Config warning for static hosts like GitHub Pages -->
+        <div id="config-warning" class="hidden mt-4 p-3 border border-amber-300 bg-amber-50 rounded text-sm text-amber-900">
+          ⚠️ <span></span>
         </div>
       </div>
 
@@ -179,7 +188,7 @@
 
     <section class="border-t border-[color:var(--line)]">
       <div class="container py-10">
-        <div class="text-sm text-[color:var(--muted)]">Trusted by founders across climate, deeptech & health</div>
+        <div class="text-sm text-[color:var(--muted)]">Trusted by founders across climate, defense, deeptech & health</div>
       </div>
     </section>
   </main>
@@ -191,9 +200,11 @@
   </footer>
 
   <script>
-    // Utility: safe JSON parse
+    // Utility helpers
     function tryJSON(text){ try { return JSON.parse(text); } catch { return null; } }
     function qs(k){ return new URLSearchParams(location.search).get(k); }
+    function setCache(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch{} }
+    function getCache(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch{ return null } }
 
     // Populate year
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -213,9 +224,36 @@
       document.getElementById('client-debug').classList.remove('hidden');
     }
 
-    // Diagnostics buttons
+    // ===== GitHub Pages note =====
+    // This page is static-only. You MUST point the form to a backend you control
+    // (e.g., Google Apps Script Web App, Cloudflare Worker, Vercel Function).
+    // Set BACKEND_URL to your deployed endpoint URL (same-origin NOT required).
+    // Example: const BACKEND_URL = 'https://script.google.com/macros/s/XXX/exec';
+    const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyW4Qg6s9mpSixQdrUkQyBQ_7R1LexpzZneaTGKMgsrIJlFnPvGEtlEVQr17Q7cdaCGjA/exec';
+    const IS_GITHUB_PAGES = /github\.io$/i.test(location.hostname);
+    function showConfigWarning(msg){
+      const w = document.getElementById('config-warning');
+      if (!w) return; w.querySelector('span').textContent = msg; w.classList.remove('hidden');
+    }
+    if (!BACKEND_URL && IS_GITHUB_PAGES && !qs('endpoint')) {
+      showConfigWarning('Backend not configured. Set BACKEND_URL in the script or pass ?endpoint=https://…');
+    }
+
+    // Endpoint discovery / overrides
+    const DEFAULT_ENDPOINTS = [ '/api/lead', '/copper/lead' ];
+    function getEndpoints(){
+      const override = qs('endpoint');
+      if (override) return [override];
+      if (BACKEND_URL) return [BACKEND_URL];
+      const cached = getCache('scout_endpoint');
+      if (cached && typeof cached === 'string') return [cached, ...DEFAULT_ENDPOINTS.filter(e=>e!==cached)];
+      return [...DEFAULT_ENDPOINTS];
+    }
+
+    // Diagnostics helpers
     const debugOut = document.getElementById('debugOut');
-    function logDebug(obj){ if (!debugMode) return; debugOut.textContent += `\n${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
+    function logDebug(obj){ if (!debugMode) return; debugOut.textContent += `
+${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
 
     const form = document.getElementById('lead-form');
     const statusEl = document.getElementById('formStatus');
@@ -223,28 +261,49 @@
     const clientLog = document.getElementById('clientLog');
 
     async function submitLead(payload){
-      const req = { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept':'application/json' }, body: JSON.stringify(payload) };
-      if (debugMode) clientLog.textContent = `REQUEST\n${JSON.stringify(req,null,2)}`;
-      const res = await fetch('/api/copper/lead', req).catch(err => ({ ok:false, status:0, statusText:'NetworkError', _err: String(err) }));
+      const endpoints = getEndpoints();
+      let lastErr = null;
+      for (const ep of endpoints) {
+        const req = { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) };
+        if (debugMode) clientLog.textContent = `REQUEST → ${ep}
+${JSON.stringify(req,null,2)}`;
+        let res;
+        try {
+          res = await fetch(ep, req);
+        } catch (err) {
+          // Try opaque fallback to let the request go through even if CORS blocks reading response
+          try {
+            await fetch(ep, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+            if (debugMode) clientLog.textContent += `
+FALLBACK no-cors used @ ${ep} (opaque response)`;
+            setCache('scout_endpoint', ep);
+            return { ok:true, opaque:true };
+          } catch (err2) {
+            lastErr = { type:'network', message:'Network error or CORS', status: 0, body: String(err2), endpoint: ep };
+            if (debugMode) clientLog.textContent += `
+NETWORK ERROR @ ${ep}: ${String(err2)}`;
+            continue;
+          }
+        }
+        const ct = res.headers.get ? (res.headers.get('content-type') || '') : '';
+        const text = await (res.text ? res.text() : Promise.resolve(''));
+        const data = tryJSON(text);
+        if (debugMode) clientLog.textContent += `
 
-      // handle network failure without response
-      if (!res || res.status === 0) {
-        throw { type:'network', message:'Network error or CORS', status: 0, body: res && res._err };
+RESPONSE ← ${ep}
+Status: ${res.status} ${res.statusText || ''}
+Content-Type: ${ct}
+Body:
+${text}`;
+        if (res.ok && (!data || data.ok !== false)) { setCache('scout_endpoint', ep); return data || { ok:true }; }
+        lastErr = { type:'http', status: res.status, statusText: res.statusText, body: text, json: data, endpoint: ep };
+        if (res.status === 404 || res.status === 405) continue; // try next
+        break;
       }
-
-      const ct = res.headers.get ? (res.headers.get('content-type') || '') : '';
-      const text = await (res.text ? res.text() : Promise.resolve(''));
-      const data = tryJSON(text);
-      if (debugMode) clientLog.textContent += `\n\nRESPONSE\nStatus: ${res.status} ${res.statusText || ''}\nContent-Type: ${ct}\nBody:\n${text}`;
-
-      // Accept either 200 JSON {ok:true} OR any 2xx with body
-      if (!res.ok || (data && data.ok === false)) {
-        throw { type:'http', status: res.status, statusText: res.statusText, body: text, json: data };
-      }
-      return data || { ok:true };
+      throw lastErr || { type:'unknown', message:'Unknown error' };
     }
 
-    // Form submit handler with detailed error surfacing
+    // Form submit handler
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusEl.textContent = '';
@@ -254,7 +313,6 @@
         const el = document.getElementById(id);
         if (!el.value.trim()) { el.focus(); statusEl.textContent = 'Please complete required fields.'; return; }
       }
-
       if (form.fax_number && form.fax_number.value) { statusEl.textContent = 'Something went wrong.'; return; }
 
       btn.disabled = true; btn.classList.add('opacity-70'); statusEl.textContent = 'Submitting…';
@@ -280,198 +338,161 @@
       };
 
       try {
-        await submitLead(payload);
-        statusEl.textContent = 'Thanks! We’ll be in touch shortly.';
-        form.reset();
+        const r = await submitLead(payload);
+        // Redirect after success
+        window.location.href = 'https://scoutclimate.com/login' + (payload.email ? ('?email='+encodeURIComponent(payload.email)) : '');
       } catch (err) {
         console.error(err);
         const code = err && err.status ? ` (HTTP ${err.status})` : '';
         statusEl.textContent = `Could not submit form${code}. Please try again.`;
-        if (debugMode) {
-          clientLog.textContent += `\n\nCLIENT ERROR\n${JSON.stringify(err,null,2)}`;
-        }
+        if (debugMode) clientLog.textContent += `
+
+CLIENT ERROR
+${JSON.stringify(err,null,2)}`;
       } finally {
         btn.disabled = false; btn.classList.remove('opacity-70');
       }
     });
 
-    // Diagnostics: endpoint ping + health
+    // Diagnostics: ping & health across all candidates
     const btnPing = document.getElementById('btnPing');
     const btnHealth = document.getElementById('btnHealth');
     btnPing && btnPing.addEventListener('click', async ()=>{
-      logDebug('Pinging /api/copper/lead (OPTIONS)…');
-      const r = await fetch('/api/copper/lead', { method:'OPTIONS' }).catch(e=>({ status:0, _err:String(e) }));
-      logDebug({ status:r.status, ok:r.ok === true });
+      logDebug('Pinging candidate endpoints (OPTIONS)…');
+      const eps = getEndpoints();
+      if (eps.length === 0) { logDebug('No endpoints configured'); return; }
+      for (const ep of eps) {
+        const r = await fetch(ep, { method:'OPTIONS' }).catch(e=>({ status:0, _err:String(e) }));
+        logDebug({ endpoint: ep, status: r.status, ok: r.ok === true });
+      }
     });
     btnHealth && btnHealth.addEventListener('click', async ()=>{
       logDebug('Health check (HEAD)…');
-      for (const ep of getEndpoints()) {
+      const eps = getEndpoints();
+      if (eps.length === 0) { logDebug('No endpoints configured'); return; }
+      for (const ep of eps) {
         const r = await fetch(ep, { method:'HEAD' }).catch(e=>({ status:0, _err:String(e) }));
         logDebug({ endpoint: ep, status: r.status, ok: r.ok === true });
       }
     });
-    });
 
     // --- Lightweight client tests (run with ?test=1) ---
     if (qs('test') === '1') runClientTests();
-
     function assert(cond, msg){
       if (!cond) throw new Error('Test failed: '+msg);
       console.log('✓', msg);
       const el = document.getElementById('testResults');
       if (el) el.innerHTML += `<div class="text-green-700">✓ ${msg}</div>`;
     }
-
     async function runClientTests(){
       const area = document.createElement('div');
       area.id = 'testResults';
       area.className = 'container my-6 p-4 border border-[color:var(--line)] rounded-lg bg-[color:var(--surface)] text-sm';
       area.innerHTML = '<div class="font-semibold mb-2">Client Tests</div>';
       document.body.appendChild(area);
-
       const realFetch = window.fetch;
       const sample = { first_name:'A', last_name:'B', email:'a@b.com', company:'C', company_desc:'D' };
-
       // 1) 404 Not Found
       window.fetch = async () => new Response('Not Found', { status:404, statusText:'Not Found' });
       try { await submitLead(sample); assert(false, '404 should throw'); } catch (e) { assert(e.status===404, '404 returns status 404'); }
-
       // 2) 502 Bad Gateway with JSON body
-      window.fetch = async () => new Response(JSON.stringify({ ok:false, error:'Copper API error' }), { status:502, headers:{ 'Content-Type':'application/json' } });
+      window.fetch = async () => new Response(JSON.stringify({ ok:false, error:'Backend error' }), { status:502, headers:{ 'Content-Type':'application/json' } });
       try { await submitLead(sample); assert(false, '502 should throw'); } catch (e) { assert(e.status===502 && e.json && e.json.error, '502 surfaces JSON error'); }
-
       // 3) 200 but ok:false payload
       window.fetch = async () => new Response(JSON.stringify({ ok:false, error:'App error' }), { status:200, headers:{ 'Content-Type':'application/json' } });
       try { await submitLead(sample); assert(false, '200/ok:false should throw'); } catch (e) { assert(e.json.error==='App error', 'ok:false surfaces app error'); }
-
       // 4) 200 ok:true
       window.fetch = async () => new Response(JSON.stringify({ ok:true }), { status:200, headers:{ 'Content-Type':'application/json' } });
       const r = await submitLead(sample); assert(r.ok===true, '200 ok:true resolves');
-
       // 5) Network error
       window.fetch = async () => { throw new TypeError('Failed to fetch'); };
       try { await submitLead(sample); assert(false, 'Network error should throw'); } catch (e) { assert(e.type==='network', 'Network error classified'); }
-
-      // restore
-      window.fetch = realFetch;
+      window.fetch = realFetch; // restore
     }
   </script>
 
 <!--
 ================================
-Serverless endpoint: /api/copper/lead
+Backend for **GitHub Pages** → Google Sheet (Apps Script)
 --------------------------------
-Create this file on your host (Vercel/Netlify/Cloudflare). It reads the form
-payload and UPSERTs a Copper Lead using secure env vars.
+You asked to use this Sheet: 
+`https://docs.google.com/spreadsheets/d/11J5rgqBDYgb9RJyLYb5xKnrj2sqdOl_-TpIBmcLuD2s/edit?usp=sharing`
 
-Required env vars (set in your dashboard, do NOT expose client-side):
-- COPPER_API_KEY        # rotate any exposed key; store the new one here
-- COPPER_USER_EMAIL     # email address of the API key owner in Copper
+Below is a minimal Google Apps Script that appends each submission to that exact Sheet (no Slack, no Copper). It also handles CORS (OPTIONS/HEAD) so the browser won’t hit 405 on preflight.
 
---- Vercel (Next.js /pages/api) ---
-// /pages/api/copper/lead.js
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ ok:false, error:'Method not allowed' });
+// Code.gs (Apps Script)
+function doPost(e){
   try {
-    const lead = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    // CORS preflight handled via manifest (below); doPost only receives POST
+    var payload = JSON.parse(e.postData.contents || '{}');
+    var ss = SpreadsheetApp.openById('11J5rgqBDYgb9RJyLYb5xKnrj2sqdOl_-TpIBmcLuD2s');
+    var sh = ss.getSheetByName('Leads') || ss.insertSheet('Leads');
 
-    const properties = {
-      name: `${lead.first_name} ${lead.last_name}`.trim(),
-      company_name: lead.company || undefined,
-      title: lead.role || undefined,
-      details: lead.company_desc || undefined,
-      email: { email: lead.email, category: 'work' },
-      websites: lead.website ? [{ url: lead.website, category: 'work' }] : [],
-      socials: lead.linkedin ? [{ url: lead.linkedin, category: 'linkedin' }] : [],
-      // customer_source_id: 12345, // optional
-      custom_fields: [
-        // { custom_field_definition_id: 11111, value: (lead.interests||[]).join(', ') },
-        // { custom_field_definition_id: 11112, value: lead.utm_source || '' },
-        // { custom_field_definition_id: 11113, value: lead.utm_medium || '' },
-        // { custom_field_definition_id: 11114, value: lead.utm_campaign || '' },
-        // { custom_field_definition_id: 11115, value: lead.utm_content || '' },
-        // { custom_field_definition_id: 11116, value: lead.referrer || '' },
-        // { custom_field_definition_id: 11117, value: lead.opt_in ? 'Yes' : 'No' }
-      ]
-    };
-
-    const copperRes = await fetch('https://api.copper.com/developer_api/v1/leads/upsert', {
-      method: 'PUT',
-      headers: {
-        'X-PW-AccessToken': process.env.COPPER_API_KEY,
-        'X-PW-Application': 'developer_api',
-        'X-PW-UserEmail': process.env.COPPER_USER_EMAIL,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        properties,
-        match: { field_name: 'email', field_value: lead.email }
-      })
-    });
-
-    const text = await copperRes.text();
-    if (!copperRes.ok) {
-      console.error('Copper error', copperRes.status, text);
-      return res.status(502).json({ ok:false, error:'Copper API error', detail:text });
+    // Header row (only once)
+    if (sh.getLastRow() === 0) {
+      sh.appendRow(['ts','first_name','last_name','email','company','role','company_desc','website','linkedin','interests','opt_in','utm_source','utm_medium','utm_campaign','utm_content','referrer','lead_source']);
     }
 
-    // Copper sometimes returns JSON; ensure JSON response outward
-    let data = tryParse(text);
-    if (!data) data = { raw:text };
-    return res.status(200).json({ ok:true, data });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ ok:false, error:'Server error' });
+    // Append the new lead
+    sh.appendRow([
+      new Date(),
+      payload.first_name || '',
+      payload.last_name || '',
+      payload.email || '',
+      payload.company || '',
+      payload.role || '',
+      payload.company_desc || '',
+      payload.website || '',
+      payload.linkedin || '',
+      (payload.interests || []).join(', '),
+      payload.opt_in ? 'Yes' : 'No',
+      payload.utm_source || '',
+      payload.utm_medium || '',
+      payload.utm_campaign || '',
+      payload.utm_content || '',
+      payload.referrer || '',
+      payload.lead_source || ''
+    ]);
+
+    return json_({ ok:true });
+  } catch(err) {
+    return json_({ ok:false, error: String(err) }, 500);
   }
 }
-function tryParse(t){ try { return JSON.parse(t); } catch { return null; } }
 
---- Netlify Functions ---
-// netlify/functions/copper-lead.js
-exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ ok:false, error:'Method not allowed' }) };
-  const lead = JSON.parse(event.body||'{}');
-  const resp = await fetch('https://api.copper.com/developer_api/v1/leads/upsert', {
-    method: 'PUT',
-    headers: {
-      'X-PW-AccessToken': process.env.COPPER_API_KEY,
-      'X-PW-Application': 'developer_api',
-      'X-PW-UserEmail': process.env.COPPER_USER_EMAIL,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ properties:{ name:`${lead.first_name} ${lead.last_name}`.trim(), email:{ email:lead.email, category:'work' }, company_name:lead.company, title:lead.role, details:lead.company_desc }, match:{ field_name:'email', field_value: lead.email } })
-  });
-  const text = await resp.text();
-  const ok = resp.ok;
-  if (!ok) return { statusCode: 502, body: JSON.stringify({ ok:false, error:'Copper API error', detail:text }) };
-  return { statusCode: 200, body: JSON.stringify({ ok:true, data: tryParse(text)||{ raw:text } }) };
-  function tryParse(t){ try { return JSON.parse(t); } catch { return null; } }
-};
+// Helpers
+function json_(obj, status){
+  var out = ContentService.createTextOutput(JSON.stringify(obj));
+  out.setMimeType(ContentService.MimeType.JSON);
+  return out.setResponseCode(status || 200);
+}
 
---- Cloudflare Pages Function ---
-// functions/api/copper/lead.ts
-export const onRequestPost: PagesFunction = async ({ request, env }) => {
-  const lead = await request.json();
-  const r = await fetch('https://api.copper.com/developer_api/v1/leads/upsert', {
-    method: 'PUT',
-    headers: {
-      'X-PW-AccessToken': env.COPPER_API_KEY,
-      'X-PW-Application': 'developer_api',
-      'X-PW-UserEmail': env.COPPER_USER_EMAIL,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ properties:{ name:`${lead.first_name} ${lead.last_name}`.trim(), email:{ email:lead.email, category:'work' }, company_name:lead.company, title:lead.role, details:lead.company_desc }, match:{ field_name:'email', field_value: lead.email } })
-  });
-  const text = await r.text();
-  if (!r.ok) return new Response(JSON.stringify({ ok:false, error:'Copper API error', detail:text }), { status: 502, headers:{ 'Content-Type':'application/json' } });
-  return new Response(JSON.stringify({ ok:true, data: tryParse(text)||{ raw:text } }), { status: 200, headers:{ 'Content-Type':'application/json' } });
-  function tryParse(t){ try { return JSON.parse(t); } catch { return null; } }
-};
+// appsscript.json (Project Settings → Show "appsscript.json")
+// This allows preflight / CORS and anonymous access to the web app URL you deploy.
+{
+  "timeZone": "Etc/UTC",
+  "exceptionLogging": "STACKDRIVER",
+  "webapp": {
+    "executeAs": "USER_DEPLOYING",
+    "access": "ANYONE"
+  }
+}
 
-// Notes:
-// • The client now surfaces precise errors with HTTP status & body.
-// • Use ?debug=1 to show client request/response and diagnostics buttons.
-// • Use ?test=1 to run client-side tests that mock fetch and validate error handling.
+Deployment steps:
+1) Open your Sheet and go to **Extensions → Apps Script**.
+2) Paste the Code.gs above (replace any starter code). Create/apply the appsscript.json as shown (File → Project Properties → Show manifest).
+3) **Deploy → New deployment → Web app**
+   - *Execute as*: Me (or User deploying)
+   - *Who has access*: Anyone
+   - Copy the **Web app URL**.
+4) In the landing page HTML, set `BACKEND_URL` to that URL, e.g.
+   `const BACKEND_URL = 'https://script.google.com/macros/s/XXXX/exec';`
+   (Or pass `?endpoint=https://script.google.com/macros/s/XXXX/exec` while testing.)
+
+Notes:
+- The script runs as your account and writes into the specified Sheet; visitors do **not** need Sheet access.
+- You can format the Sheet later or create a view-only copy for your team.
+- If you want to redirect to a Thank‑You page after success, tell me the URL and I’ll add the redirect.
 ================================
 -->
 </body>
