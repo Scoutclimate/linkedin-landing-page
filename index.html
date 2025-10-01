@@ -60,39 +60,13 @@
   <main class="flex-1">
     <!-- Hero -->
     <section class="container py-12 md:py-16 grid md:grid-cols-2 gap-10 items-start">
-      <div>
-        <div class="eyebrow">For LinkedIn visitors</div>
-        <h1 class="mt-3 text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">Secure Funding Faster<br class="hidden md:block"> Focus on your Mission</h1>
-        <p class="mt-4 text-[color:var(--copy)] max-w-prose">Get expert‑level results without expert‑level costs. Scout delivers AI‑powered proposal writing with human expertise — faster, more affordable, and built to win.</p>
-        <div class="mt-6">
-          <img src="https://scoutclimate.com/homepage/platform.png" alt="Scout platform interface" class="mt-8 w-full rounded-lg border border-[color:var(--line)]" />
-        </div>
-        
-        <!-- Optional diagnostics UI (only shown when ?debug=1) -->
-        <div id="debug-panel" class="hidden mt-6">
-          <div class="text-sm text-[color:var(--copy)] font-medium">Diagnostics</div>
-          <div class="mt-2 flex flex-wrap gap-2">
-            <button id="btnPing" class="btn btn-ghost">Ping endpoints</button>
-            <button id="btnHealth" class="btn btn-ghost">Health check</button>
-          </div>
-          <details class="debug mt-3">
-            <summary class="text-sm text-[color:var(--muted)]">Show debug output</summary>
-            <pre id="debugOut" class="debug mt-2"></pre>
-          </details>
-        </div>
-
-        <!-- Config warning for static hosts like GitHub Pages -->
-        <div id="config-warning" class="hidden mt-4 p-3 border border-amber-300 bg-amber-50 rounded text-sm text-amber-900">
-          ⚠️ <span></span>
-        </div>
-      </div>
 
       <!-- Form Card: right column, sticky on desktop -->
       <div id="form" class="card p-6 md:p-8 md:sticky md:top-8">
+        <h1 class="mt-3 text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">Secure Funding Faster</h1>
+
         <form id="lead-form" novalidate>
           <h2 class="text-xl font-semibold">Tell us about your company</h2>
-          <p class="mt-1 text-sm text-[color:var(--muted)]">We’ll follow up same‑day with a quick plan & options.</p>
-
           <!-- Name / Email -->
           <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -121,23 +95,6 @@
             </div>
           </div>
 
-          <!-- Unique: What does your company do? -->
-          <div class="mt-4">
-            <label for="company_desc" class="label">What does your company do?<span class="text-red-500"> *</span></label>
-            <textarea id="company_desc" name="company_desc" required rows="4" placeholder="e.g., We build AI‑enabled batteries that charge in 5 min…" class="field mt-1 w-full"></textarea>
-          </div>
-
-          <!-- Interested in -->
-          <fieldset class="mt-4">
-            <legend class="label">Interested in</legend>
-            <div class="mt-2 grid grid-cols-2 gap-2 text-sm text-[color:var(--copy)]">
-              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="Matching" class="rounded" /> Matching</label>
-              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="AI Writing" class="rounded" /> AI Writing</label>
-              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="Expert Review" class="rounded" /> Expert Review</label>
-              <label class="inline-flex items-center gap-2"><input type="checkbox" name="interests" value="Compliance" class="rounded" /> Compliance</label>
-            </div>
-          </fieldset>
-
           <!-- Optional details -->
           <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -150,11 +107,16 @@
             </div>
           </div>
 
+          <!-- Unique: What does your company do? -->
+          <div class="mt-4">
+            <label for="company_desc" class="label">What does your company do?<span class="text-red-500"> *</span></label>
+            <textarea id="company_desc" name="company_desc" required rows="4" placeholder="e.g., We build AI‑enabled batteries that charge in 5 min…" class="field mt-1 w-full"></textarea>
+          </div>
           <!-- Consent -->
           <div class="mt-4">
             <label class="inline-flex items-start gap-2 text-sm text-[color:var(--copy)]">
-              <input id="opt_in" name="opt_in" type="checkbox" class="mt-1 rounded" />
-              <span>Send me funding tips & opportunity alerts</span>
+              <input id="opt_in" name="opt_in" checked type="checkbox" class="mt-1 rounded" />
+              <span>You consent to receive Scout's marketing communications including newsletters, blog posts, product news, webinars, and targeted advertising. You can unsubscribe from our marketing emails at any time by clicking on the “Unsubscribe” link at the bottom of our emails. For more information, please see our <a href="https://scoutclimate.com/privacy-policy/" class="underline" title="Privacy Policy">Privacy Policy</a> and <a href="https://scoutclimate.com/terms/" class="underline" title="Privacy Policy">Terms of Services</a>.</span>
             </label>
           </div>
 
@@ -173,7 +135,7 @@
 
           <!-- Submit -->
           <div class="mt-6 flex items-center gap-3">
-            <button type="submit" id="submitBtn" class="btn btn-primary">Get my matches</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary">Book a Call</button>
             <span id="formStatus" class="text-sm text-[color:var(--muted)]" role="status" aria-live="polite"></span>
           </div>
 
@@ -183,6 +145,30 @@
             <pre id="clientLog" class="debug mt-2"></pre>
           </details>
         </form>
+      </div>
+
+      <div>
+        <div class="mt-6">
+          <img src="https://scoutclimate.com/homepage/platform.png" alt="Scout platform interface" class="mt-8 w-full rounded-lg border border-[color:var(--line)]" />
+        </div>
+        
+        <!-- Optional diagnostics UI (only shown when ?debug=1) -->
+        <div id="debug-panel" class="hidden mt-6">
+          <div class="text-sm text-[color:var(--copy)] font-medium">Diagnostics</div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <button id="btnPing" class="btn btn-ghost">Ping endpoints</button>
+            <button id="btnHealth" class="btn btn-ghost">Health check</button>
+          </div>
+          <details class="debug mt-3">
+            <summary class="text-sm text-[color:var(--muted)]">Show debug output</summary>
+            <pre id="debugOut" class="debug mt-2"></pre>
+          </details>
+        </div>
+
+        <!-- Config warning for static hosts like GitHub Pages -->
+        <div id="config-warning" class="hidden mt-4 p-3 border border-amber-300 bg-amber-50 rounded text-sm text-amber-900">
+          ⚠️ <span></span>
+        </div>
       </div>
     </section>
 
@@ -318,7 +304,6 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
 
       btn.disabled = true; btn.classList.add('opacity-70'); statusEl.textContent = 'Submitting…';
 
-      const interests = Array.from(form.querySelectorAll('input[name="interests"]:checked')).map(i => i.value);
       const payload = {
         first_name: form.first_name.value.trim(),
         last_name: form.last_name.value.trim(),
@@ -328,7 +313,6 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
         company_desc: form.company_desc.value.trim(),
         website: form.website.value.trim() || null,
         linkedin: form.linkedin.value.trim() || null,
-        interests,
         opt_in: form.opt_in.checked,
         utm_source: form.utm_source.value,
         utm_medium: form.utm_medium.value,
