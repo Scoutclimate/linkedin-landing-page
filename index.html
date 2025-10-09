@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Scout — Secure Funding Faster</title>
-  <meta name="description" content="Scout is the AI proposal‑writing platform built by founders, for founders. Tell us about your company and we’ll match you to the right non‑dilutive funding and set up a quick intro." />
+  <meta name="description" content="Scout is the AI proposal-writing platform built by founders, for founders. Tell us about your company and we’ll match you to the right non-dilutive funding and set up a quick intro." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,11 +12,11 @@
   <style>
     :root{
       --bg: #ffffff;
-      --ink: #0b1220;         /* headline near‑black */
-      --copy: #334155;        /* slate‑700 */
-      --muted: #64748b;       /* slate‑500 */
-      --line: #e5e7eb;        /* gray‑200 */
-      --surface: #f9fafb;     /* gray‑50 */
+      --ink: #0b1220;         /* headline near-black */
+      --copy: #334155;        /* slate-700 */
+      --muted: #64748b;       /* slate-500 */
+      --line: #e5e7eb;        /* gray-200 */
+      --surface: #f9fafb;     /* gray-50 */
       --primary: #de590e;     /* primary button color */
       --primary-600: #c64f0d; /* hover */
       --ring: rgba(222,89,14,.28);
@@ -110,8 +110,35 @@
           <!-- Unique: What does your company do? -->
           <div class="mt-4">
             <label for="company_desc" class="label">What does your company do?<span class="text-red-500"> *</span></label>
-            <textarea id="company_desc" name="company_desc" required rows="4" placeholder="e.g., We build AI‑enabled batteries that charge in 5 min…" class="field mt-1 w-full"></textarea>
+            <textarea id="company_desc" name="company_desc" required rows="4" placeholder="e.g., We build AI-enabled batteries that charge in 5 min…" class="field mt-1 w-full"></textarea>
           </div>
+
+          <!-- NEW: US majority ownership -->
+          <div class="mt-4">
+            <label class="label">Is the majority of your startup owned by US citizens or permanent residents?<span class="text-red-500"> *</span></label>
+            <div class="mt-2 flex gap-6 text-sm text-[color:var(--copy)]">
+              <label class="inline-flex items-center gap-2">
+                <input type="radio" name="majority_us_owned" value="Yes" required class="rounded" /> Yes
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input type="radio" name="majority_us_owned" value="No" class="rounded" /> No
+              </label>
+            </div>
+          </div>
+
+          <!-- NEW: Fundraising status -->
+          <div class="mt-4">
+            <label for="fundraising_status" class="label">Current fundraising status</label>
+            <select id="fundraising_status" name="fundraising_status" class="field mt-1 w-full">
+              <option value="">Select…</option>
+              <option>Not raising</option>
+              <option>Considering a raise</option>
+              <option>Raising soon (0–3 months)</option>
+              <option>Actively raising</option>
+              <option>Recently raised</option>
+            </select>
+          </div>
+
           <!-- Consent -->
           <div class="mt-4">
             <label class="inline-flex items-start gap-2 text-sm text-[color:var(--copy)]">
@@ -301,10 +328,16 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
         const el = document.getElementById(id);
         if (!el.value.trim()) { el.focus(); statusEl.textContent = 'Please complete required fields.'; return; }
       }
+      // Require the US-ownership radio selection
+      if (!form.querySelector('input[name="majority_us_owned"]:checked')) {
+        statusEl.textContent = 'Please indicate US ownership.';
+        return;
+      }
       if (form.fax_number && form.fax_number.value) { statusEl.textContent = 'Something went wrong.'; return; }
 
       btn.disabled = true; btn.classList.add('opacity-70'); statusEl.textContent = 'Submitting…';
 
+      const majority = form.querySelector('input[name="majority_us_owned"]:checked');
       const payload = {
         first_name: form.first_name.value.trim(),
         last_name: form.last_name.value.trim(),
@@ -314,6 +347,11 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
         company_desc: form.company_desc.value.trim(),
         website: form.website.value.trim() || null,
         linkedin: form.linkedin.value.trim() || null,
+
+        // NEW fields
+        majority_us_owned: majority ? majority.value : null,
+        fundraising_status: (form.fundraising_status && form.fundraising_status.value) || null,
+
         opt_in: form.opt_in.checked,
         utm_source: form.utm_source.value,
         utm_medium: form.utm_medium.value,
@@ -325,8 +363,15 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
 
       try {
         const r = await submitLead(payload);
-        // Redirect after success
-        window.location.href = 'https://scoutclimate.com/login' + (payload.email ? ('?email='+encodeURIComponent(payload.email)) : '');
+
+        // THANK-YOU STATE instead of redirect
+        const card = document.getElementById('form');
+        card.innerHTML = `
+          <div class="p-10 text-center">
+            <h2 class="text-2xl font-semibold">Thank you! We'll be in touch.</h2>
+            <p class="mt-2 text-[color:var(--copy)]">We received your details and will reach out shortly.</p>
+          </div>
+        `;
       } catch (err) {
         console.error(err);
         const code = err && err.status ? ` (HTTP ${err.status})` : '';
@@ -336,7 +381,10 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
 CLIENT ERROR
 ${JSON.stringify(err,null,2)}`;
       } finally {
-        btn.disabled = false; btn.classList.remove('opacity-70');
+        // If we swapped the card to the thank-you view, btn no longer exists; guard it.
+        if (document.getElementById('submitBtn')) {
+          btn.disabled = false; btn.classList.remove('opacity-70');
+        }
       }
     });
 
@@ -377,7 +425,7 @@ ${JSON.stringify(err,null,2)}`;
       area.innerHTML = '<div class="font-semibold mb-2">Client Tests</div>';
       document.body.appendChild(area);
       const realFetch = window.fetch;
-      const sample = { first_name:'A', last_name:'B', email:'a@b.com', company:'C', company_desc:'D' };
+      const sample = { first_name:'A', last_name:'B', email:'a@b.com', company:'C', company_desc:'D', majority_us_owned:'Yes', fundraising_status:'Actively raising' };
       // 1) 404 Not Found
       window.fetch = async () => new Response('Not Found', { status:404, statusText:'Not Found' });
       try { await submitLead(sample); assert(false, '404 should throw'); } catch (e) { assert(e.status===404, '404 returns status 404'); }
