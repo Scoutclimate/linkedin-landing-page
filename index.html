@@ -231,6 +231,18 @@
     }
     document.getElementById('referrer').value = document.referrer || '';
 
+    // 🟢 NEW: Capture ?source= query string
+    const sourceParam = params.get('source');
+    if (sourceParam) {
+      // store in hidden field or create one dynamically
+      let srcField = document.createElement('input');
+      srcField.type = 'hidden';
+      srcField.name = 'source';
+      srcField.id = 'source';
+      srcField.value = sourceParam;
+      document.getElementById('lead-form').appendChild(srcField);
+    }
+
     // Debug toggles
     const debugMode = qs('debug') === '1';
     if (debugMode) {
@@ -248,7 +260,6 @@
       showConfigWarning('Backend not configured. Set BACKEND_URL in the script or pass ?endpoint=https://…');
     }
 
-    // Endpoint discovery / overrides
     const DEFAULT_ENDPOINTS = [ '/api/lead', '/copper/lead' ];
     function getEndpoints(){
       const override = qs('endpoint');
@@ -259,10 +270,9 @@
       return [...DEFAULT_ENDPOINTS];
     }
 
-    // Diagnostics helpers
     const debugOut = document.getElementById('debugOut');
     function logDebug(obj){ if (!debugMode) return; debugOut.textContent += `
-${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
+  ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
 
     const form = document.getElementById('lead-form');
     const statusEl = document.getElementById('formStatus');
@@ -276,27 +286,22 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
         const url = new URL(ep, location.href);
         const crossOrigin = url.origin !== location.origin;
 
-        // If cross-origin (e.g., Apps Script), use sendBeacon to bypass CORS entirely.
         if (crossOrigin && navigator.sendBeacon) {
           try {
             const ok = navigator.sendBeacon(url.toString(), new Blob([JSON.stringify(payload)], { type:'text/plain;charset=UTF-8' }));
             if (debugMode) clientLog.textContent = `BEACON → ${url}  ok=${ok}`;
             setCache('scout_endpoint', ep);
-            // Fire-and-forget: treat as success; we don't need to read the response.
             return { ok: true, mode: 'beacon' };
           } catch (e) {
             lastErr = { type:'beacon', message:'sendBeacon failed', body:String(e), endpoint:ep };
             if (debugMode) clientLog.textContent += `\nBEACON ERROR @ ${ep}: ${String(e)}`;
-            // fall through to fetch attempts below
           }
         }
 
-        // Fallback: simple POST with text/plain (avoids preflight). Response may still be opaque without ACAO.
         const req = { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), mode: crossOrigin ? 'no-cors' : 'cors' };
         if (debugMode) clientLog.textContent = `REQUEST → ${ep}\n${JSON.stringify({ ...req, body:'<payload>' },null,2)}`;
         try {
           const res = await fetch(ep, req);
-          // If no-cors, we cannot read status/body; treat as success since the request left the browser.
           if (req.mode === 'no-cors') {
             if (debugMode) clientLog.textContent += `\nRESPONSE ← ${ep} (opaque, no-cors)`;
             setCache('scout_endpoint', ep);
@@ -307,7 +312,7 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
           if (debugMode) clientLog.textContent += `\nRESPONSE ← ${ep}\nStatus: ${res.status}\nBody:\n${text}`;
           if (res.ok && (!data || data.ok !== false)) { setCache('scout_endpoint', ep); return data || { ok:true }; }
           lastErr = { type:'http', status: res.status, body:text, json:data, endpoint:ep };
-          if (res.status === 404 || res.status === 405) continue; // try next candidate
+          if (res.status === 404 || res.status === 405) continue;
           break;
         } catch (err) {
           lastErr = { type:'network', message:'Network error or CORS', status: 0, body: String(err), endpoint: ep };
@@ -318,7 +323,6 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
       throw lastErr || { type:'unknown', message:'Unknown error' };
     }
 
-    // Form submit handler
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusEl.textContent = '';
@@ -328,7 +332,6 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
         const el = document.getElementById(id);
         if (!el.value.trim()) { el.focus(); statusEl.textContent = 'Please complete required fields.'; return; }
       }
-      // Require the US-ownership radio selection
       if (!form.querySelector('input[name="majority_us_owned"]:checked')) {
         statusEl.textContent = 'Please indicate US ownership.';
         return;
@@ -347,26 +350,22 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
         company_desc: form.company_desc.value.trim(),
         website: form.website.value.trim() || null,
         linkedin: form.linkedin.value.trim() || null,
-
-        // NEW fields
         majority_us_owned: majority ? majority.value : null,
         fundraising_status: (form.fundraising_status && form.fundraising_status.value) || null,
-
         opt_in: form.opt_in.checked,
         utm_source: form.utm_source.value,
         utm_medium: form.utm_medium.value,
         utm_campaign: form.utm_campaign.value,
         utm_content: form.utm_content.value,
         referrer: form.referrer.value,
-        lead_source: form.lead_source.value
+        lead_source: form.lead_source.value,
+        // 🟢 NEW FIELD added to payload
+        source: sourceParam || null
       };
 
       try {
         const r = await submitLead(payload);
-
-        // THANK-YOU STATE instead of redirect
-        const card = document.getElementById('form');
-        card.innerHTML = `
+        document.getElementById('form').innerHTML = `
           <div class="p-10 text-center">
             <h2 class="text-2xl font-semibold">Thank you! We'll be in touch.</h2>
             <p class="mt-2 text-[color:var(--copy)]">We received your details and will reach out shortly.</p>
@@ -378,71 +377,14 @@ ${typeof obj==='string'?obj:JSON.stringify(obj,null,2)}`; }
         statusEl.textContent = `Could not submit form${code}. Please try again.`;
         if (debugMode) clientLog.textContent += `
 
-CLIENT ERROR
-${JSON.stringify(err,null,2)}`;
+  CLIENT ERROR
+  ${JSON.stringify(err,null,2)}`;
       } finally {
-        // If we swapped the card to the thank-you view, btn no longer exists; guard it.
         if (document.getElementById('submitBtn')) {
           btn.disabled = false; btn.classList.remove('opacity-70');
         }
       }
     });
-
-    // Diagnostics: ping & health across all candidates
-    const btnPing = document.getElementById('btnPing');
-    const btnHealth = document.getElementById('btnHealth');
-    btnPing && btnPing.addEventListener('click', async ()=>{
-      logDebug('Pinging candidate endpoints (OPTIONS)…');
-      const eps = getEndpoints();
-      if (eps.length === 0) { logDebug('No endpoints configured'); return; }
-      for (const ep of eps) {
-        const r = await fetch(ep, { method:'OPTIONS' }).catch(e=>({ status:0, _err:String(e) }));
-        logDebug({ endpoint: ep, status: r.status, ok: r.ok === true });
-      }
-    });
-    btnHealth && btnHealth.addEventListener('click', async ()=>{
-      logDebug('Health check (HEAD)…');
-      const eps = getEndpoints();
-      if (eps.length === 0) { logDebug('No endpoints configured'); return; }
-      for (const ep of eps) {
-        const r = await fetch(ep, { method:'HEAD' }).catch(e=>({ status:0, _err:String(e) }));
-        logDebug({ endpoint: ep, status: r.status, ok: r.ok === true });
-      }
-    });
-
-    // --- Lightweight client tests (run with ?test=1) ---
-    if (qs('test') === '1') runClientTests();
-    function assert(cond, msg){
-      if (!cond) throw new Error('Test failed: '+msg);
-      console.log('✓', msg);
-      const el = document.getElementById('testResults');
-      if (el) el.innerHTML += `<div class="text-green-700">✓ ${msg}</div>`;
-    }
-    async function runClientTests(){
-      const area = document.createElement('div');
-      area.id = 'testResults';
-      area.className = 'container my-6 p-4 border border-[color:var(--line)] rounded-lg bg-[color:var(--surface)] text-sm';
-      area.innerHTML = '<div class="font-semibold mb-2">Client Tests</div>';
-      document.body.appendChild(area);
-      const realFetch = window.fetch;
-      const sample = { first_name:'A', last_name:'B', email:'a@b.com', company:'C', company_desc:'D', majority_us_owned:'Yes', fundraising_status:'Actively raising' };
-      // 1) 404 Not Found
-      window.fetch = async () => new Response('Not Found', { status:404, statusText:'Not Found' });
-      try { await submitLead(sample); assert(false, '404 should throw'); } catch (e) { assert(e.status===404, '404 returns status 404'); }
-      // 2) 502 Bad Gateway with JSON body
-      window.fetch = async () => new Response(JSON.stringify({ ok:false, error:'Backend error' }), { status:502, headers:{ 'Content-Type':'application/json' } });
-      try { await submitLead(sample); assert(false, '502 should throw'); } catch (e) { assert(e.status===502 && e.json && e.json.error, '502 surfaces JSON error'); }
-      // 3) 200 but ok:false payload
-      window.fetch = async () => new Response(JSON.stringify({ ok:false, error:'App error' }), { status:200, headers:{ 'Content-Type':'application/json' } });
-      try { await submitLead(sample); assert(false, '200/ok:false should throw'); } catch (e) { assert(e.json.error==='App error', 'ok:false surfaces app error'); }
-      // 4) 200 ok:true
-      window.fetch = async () => new Response(JSON.stringify({ ok:true }), { status:200, headers:{ 'Content-Type':'application/json' } });
-      const r = await submitLead(sample); assert(r.ok===true, '200 ok:true resolves');
-      // 5) Network error
-      window.fetch = async () => { throw new TypeError('Failed to fetch'); };
-      try { await submitLead(sample); assert(false, 'Network error should throw'); } catch (e) { assert(e.type==='network', 'Network error classified'); }
-      window.fetch = realFetch; // restore
-    }
   </script>
 
 </body>
